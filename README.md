@@ -1,4 +1,4 @@
-# GEO511 Case Studies
+# GEO511 Study
 
 ## Project Overview
 This repository contains the case studies I conducted for each week in my GEO511 course. Each case study was done in R and includes data analysis and visualization.
