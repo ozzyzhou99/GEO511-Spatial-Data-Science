@@ -1,0 +1,57 @@
+---
+title: "CS_02 My grandfather says summers are getting hotter"
+author: "Zhongyu Zhou"
+date: "2024-09-11"
+output: html_document
+---
+
+## Introduction
+
+This report provides an analysis of summer temperatures in Buffalo, NY, using data from NASA's GISS database. The goal is to examine trends and variations in summer temperatures over the years.
+
+## Data Acquisition
+
+The data was downloaded from the NASA GISS database, which provides monthly mean temperatures. The following R code was used to download and preprocess the data:
+
+```{r data acquisition, include=TRUE}
+library(tidyverse)
+
+# define the link to the data - you can try this in your browser too.  Note that the URL ends in .txt.
+dataurl="https://data.giss.nasa.gov/tmp/gistemp/STATIONS_v4/tmp_USW00014733_14_0_1/station.csv"
+
+#the next line tells the NASA site to create the temporary file
+httr::GET("https://data.giss.nasa.gov/cgi-bin/gistemp/stdata_show_v4.cgi?id=USW00014733&ds=14&dt=1")
+
+# the next lines download the data
+temp=read_csv(dataurl, 
+              na="999.90", # tell R that 999.90 means missing in this dataset
+              skip=1, # we will use our own column names as below so we'll skip the first row
+              col_names = c("YEAR","JAN","FEB","MAR", # define column names 
+                            "APR","MAY","JUN","JUL",  
+                            "AUG","SEP","OCT","NOV",  
+                            "DEC","DJF","MAM","JJA",  
+                            "SON","metANN"))
+```
+
+## Plot the temperature trends
+
+Plot the mean summer temperatures (June, July, and August) over the years to see the trends:
+
+```{r temperature-trends, include=TRUE}
+temp_plot <- ggplot(temp, aes(YEAR, JJA)) + 
+  geom_line(color = "black") + 
+  # Add linear regression line
+  #geom_smooth(method = "lm", color = "blue") +
+  # Add the smooth line
+  geom_smooth(method = "loess", color = "red") + 
+  xlab("Year") +                                
+  ylab("Mean Summer Temperatures (C)") +                  
+  ggtitle("Mean Summer Temperatures in Buffalo, NY\nSummer includes June, July, and August\nData from the Global Historical Climate Network\nRed line is a LOESS smooth") + 
+  theme_minimal()  
+
+print(temp_plot)
+```
+
+## Conclusion
+
+This graph shows the trend of summer average temperature (June, July, and August) in Buffalo, New York from 1880 to the recent past. As can be seen from the graph, the average summer temperature fluctuates throughout the time period, but shows an overall gradual upward trend. The red LOESS smoothed line clearly shows the gradual increase in temperature over time, which may be related to global climate change and regional warming.
