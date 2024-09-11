@@ -27,7 +27,7 @@ temp_plot <- ggplot(temp, aes(YEAR, JJA)) +
 
 
 # Save the plots as a PNG file
-ggsave("mean_summer_temperatures_buffalo.png", plot = temp_plot, width = 10, height = 6)
+ggsave("plots/mean_summer_temperatures_buffalo.png", plot = temp_plot, width = 10, height = 6)
 
 # Show the plots
 print(temp_plot)
