@@ -1,0 +1,98 @@
+---
+title: "CS_04"
+author: "Zhongyu Zhou"
+date: "2024-09-25"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+In this report, we will explore flight data from the "nycflights13" package. Specifically, our goals are to:
+1. Identify the destination airports farthest from New York City airports.
+2. Map the airport locations
+3. Calculate the average delay for each destination and map it.
+
+We will use a variety of data wrangling techniques to achieve these goals.
+
+## Step 1: Load necessary packages
+
+We begin by loading the required libraries. The `tidyverse` package is essential for data manipulation, `nycflights13` contains the flight and airport data, and `maps` is used for plotting geographic maps.
+
+```{r load-packages, echo=TRUE}
+library(tidyverse)
+library(nycflights13)
+library(maps)
+```
+
+## Step 2: View the datasets
+Let’s start by skimming through the first few rows of the flights and airports datasets to get a feel for their structure. This helps us identify relevant columns, such as destination code and coordinates, for subsequent analysis.
+
+```{r View-datasets, echo=TRUE}
+# View the first few rows of the flights dataset
+head(flights)
+
+# View the first few rows of the airports dataset
+head(airports)
+```
+
+## Step 3: Find the farthest airport
+Next, we want to identify the farthest destination airport from any of the NYC airports. We will sort the flights dataset by distance and select the flight with the greatest distance. After finding the corresponding airport code, we will look up the full name of the airport.
+
+```{r airportname, echo=TRUE}
+# Find the farthest flight by sorting by distance
+farthest_flight <- flights %>%
+  arrange(desc(distance)) %>%
+  slice(1)  # Get the top row with the maximum distance
+
+# Extract the destination airport code
+farthest_code <- farthest_flight %>%
+  pull(dest)
+
+# Print the airport code
+farthest_code
+
+# Join with the airports dataset to get the full airport name
+farthest_airport <- farthest_flight %>%
+  left_join(airports, by = c("dest" = "faa")) %>%
+  select(name) %>%
+  as.character()
+
+# Print the name of the farthest airport
+farthest_airport
+```
+
+## Step 4: Plot airport locations on a world map
+Now, let's visualize all the airports using their geographic coordinates (longitude and latitude). We'll plot these points on a world map with red dots marking each airport.
+```{r plotlocation, echo=TRUE}
+# Plot airport locations on a world map
+airports %>%
+  distinct(lon, lat) %>%
+  ggplot(aes(lon, lat)) +
+  borders("world") +  # Draw the world map
+  geom_point(col="red") +  # Red dots represent airports
+  coord_quickmap()  # Keep the correct map proportions
+```
+
+## Step 5: Plot average delay by destination airport
+Here, we calculate the average arrival delay for each destination airport. We group the flight data by the destination airport code (dest) and then use mean() to calculate the average delay, excluding missing values (NA). We then plot a map to visualize the average delays across the United States. Red indicates long delays, blue indicates early arrivals, and white indicates no delays.
+```{r plotdelay, echo=TRUE}
+# Calculate average delay by destination airport
+mean_delay <- flights %>%
+  group_by(dest) %>%
+  summarise(mean_delay = mean(arr_delay, na.rm = TRUE)) %>%
+  left_join(airports, by = c("dest" = "faa"))  # Join with airports to get latitude and longitude
+
+# Plot the map of the United States with mean delays
+ggplot(mean_delay, aes(lon, lat)) +
+  borders("state") +  # Add state boundaries
+  geom_point(aes(color = mean_delay), size = 3) +  # Color points based on delay
+  scale_color_gradient2(low = "blue", mid = "white", high = "red", midpoint = 0, name = "Mean Delay\n(minutes)") +  # Color gradient
+  coord_fixed(ratio = 1.3, xlim = c(-125, -65), ylim = c(25, 50))  # Fix the aspect ratio and set map limits
+```
+
+## Conlusion
+For this case study, we identified the destination airports farthest from New York City, calculated the average delay at each destination airport, and visualized these delays on a map of the United States.
