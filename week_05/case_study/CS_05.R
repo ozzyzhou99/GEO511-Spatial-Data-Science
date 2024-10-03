@@ -1,7 +1,8 @@
 library(spData)
 library(sf)
 library(tidyverse)
-# library(units) #this one is optional, but can help with unit conversions.
+library(ggplot2)
+library(units) #this one is optional, but can help with unit conversions.
 
 #load 'world' data from spData package
 data(world)  
@@ -15,10 +16,14 @@ new_york <- us_states[us_states$NAME == "New York", ] %>% st_transform(crs = alb
 canada_buffer <- st_buffer(canada, dist = 10000)  # Buffer by 10km
 border_area <- st_intersection(canada_buffer, new_york)
 
+print(border_area)
+
 area_sqm <- st_area(border_area)  # Area in square meters
-area_sqkm <- area_sqm / 1e6  # Convert to square kilometers
+area_sqkm <- set_units(st_area(border_area), "km^2")
 print(area_sqkm)
 
 ggplot() +
-  geom_sf(data = border_area) +
-  theme_minimal()
+  geom_sf(data = border_area, fill = "red", color = "black") +   # Red fill for the border area
+  coord_sf(xlim = c(-80, -71), ylim = c(40.5, 46.5)) +           # Adjust the limits to match the example
+  theme_minimal() +                                              # Use a minimal theme
+  labs(title = "New York Land within 10km")                      # Add a title
