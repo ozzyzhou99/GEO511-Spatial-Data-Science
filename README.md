@@ -7,7 +7,8 @@ This repository contains the case studies I conducted for each week in my GEO511
 - `plots/`: Holds the generated plots and visualization outputs.
 - `week_01/case_study/`: Case study for week 1.
 - `week_02/case_study/`: Case study for week 2, exploring summer temperature variations.
-- `week_03/case_study/`: Case study for week 3，Analyze and display the changing trends of GDP per capita and life expectancy over time for continents and countries around the world.
+- `week_03/case_study/`: Case study for week 3，analyze and display the changing trends of GDP per capita and life expectancy over time for continents and countries around the world.
+- `week_04/case_study/`: This case study aims to identify the farthest destination airport from NYC and visualize the average flight delays at various US airports, providing insights into how delays vary geographically.
 
 ## How to Use
 To view the project files:
