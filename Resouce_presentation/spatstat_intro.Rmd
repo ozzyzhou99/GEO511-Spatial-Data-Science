@@ -1,5 +1,5 @@
 ---
-title: "Spatstat intro"
+title: "Spatstat Case"
 author: "Zhongyu Zhou"
 date: "2024-10-09"
 output: html_document
@@ -11,10 +11,6 @@ knitr::opts_chunk$set(echo = TRUE)
 library(spatstat)
 library(OpenStreetMap)
 ```
-
-# Introduction to `spatstat`
-
-`spatstat` is an R package for spatial point pattern analysis. It provides a range of tools for point pattern data, including pattern visualization, clustering tests, density estimation, and simulation point processes. The following will show how to use `spatstat` to perform some typical spatial point pattern analysis.
 
 # Data Preparation
 
@@ -105,7 +101,3 @@ multi_K <- Kcross(multi_type_data, i = "Type A", j = "Type B")
 plot(multi_K, main = "Multi-type K-function Analysis")
 
 ```
-
-# Summary
-
-This shows how to use `spatstat` Perform spatial point pattern analysis of meteorological stations, including basic visualization, clustering analysis, density estimation, point pattern simulation, and multi-type point pattern analysis. These tools can help you gain a deeper understanding of the distribution characteristics of spatial point data and its underlying laws.
