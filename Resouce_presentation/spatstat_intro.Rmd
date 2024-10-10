@@ -1,0 +1,111 @@
+---
+title: "Spatstat intro"
+author: "Zhongyu Zhou"
+date: "2024-10-09"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(spatstat)
+library(OpenStreetMap)
+```
+
+# Introduction to `spatstat`
+
+`spatstat` is an R package for spatial point pattern analysis. It provides a range of tools for point pattern data, including pattern visualization, clustering tests, density estimation, and simulation point processes. The following will show how to use `spatstat` to perform some typical spatial point pattern analysis.
+
+# Data Preparation
+
+First, we will load the weather station data and convert it into a point pattern data object in `spatstat`.
+
+```{r data-preparation}
+# Load data
+your_data <- read.csv("data/annual_conc_by_monitor_2023.csv")
+
+# Select longitude and latitude columns
+your_data <- your_data[, c("Longitude", "Latitude")]
+
+# Remove duplicate points
+your_data <- your_data[!duplicated(your_data), ]
+
+# Define the point pattern window range
+window <- owin(xrange = range(your_data$Longitude, na.rm = TRUE),
+yrange = range(your_data$Latitude, na.rm = TRUE))
+
+# Convert the data to a point pattern object
+locations <- ppp(x = your_data$Longitude, y = your_data$Latitude, window = window)
+
+# Plot point pattern with OSM basemap
+base_map <- openmap(upperLeft = c(max(your_data$Latitude), min(your_data$Longitude)), lowerRight = c(min(your_data$Latitude), max(your_data$Longitude)), type = "osm")
+base_map_projected <- openproj(base_map, projection = "+proj=longlat +datum=WGS84")
+
+plot(base_map_projected, main = "Meteorological Stations in US")
+points(your_data$Longitude, your_data$Latitude, pch = 20, col = "blue", cex = 0.6)
+```
+
+# K-function Analysis
+
+The K-function is used to evaluate the spatial clustering between points in a point pattern, helping to determine whether the points are randomly distributed, clustered, or evenly distributed.
+
+```{r k-function}
+# Calculate K function
+K <- Kest(locations)
+
+# Plot K function
+plot(K, main = "K-function Analysis of Meteorological Stations")
+
+# The black curve(spatial clustering patterns of actual data) is significantly higher than the blue completely random distribution (CSR) curve, which indicates that the distribution of weather stations has significant spatial aggregation. That is, weather stations are not randomly distributed but tend to be concentrated in certain areas.
+
+# The red and green curves are the edge-corrected K functions, which reduce the deviation due to boundary effects.
+```
+
+# Density Estimation
+
+Density estimation can be used to observe the distribution density of meteorological stations in space and help identify hot spots.
+
+```{r density-estimation}
+# Estimate the density of points
+density_map <- density(locations)
+
+# Plot the density map
+plot(density_map, main = "Density Estimation of Meteorological Stations")
+```
+
+# Point Pattern Simulation
+
+Simulate a new point pattern using a completely random distribution (CSR) and compare with the actual data.
+
+```{r point-simulation}
+# Simulate a completely random point pattern, generate about 300 points
+random_pattern <- rpoispp(300 / area.owin(window), win = window)
+
+# Plot the simulated point pattern
+plot(base_map_projected, main = "Simulated Random Point Pattern with Basemap")
+points(random_pattern$x, random_pattern$y, pch = 20, col = "red", cex = 0.6)
+```
+
+# Multi-type Point Pattern Analysis
+
+If the weather stations have different categories (e.g. different types of weather stations), we can perform multi-type point pattern analysis.
+
+```{r multi-type}
+# Make sure the data still has enough categories after removing duplicate points
+your_data$station_type <- sample(c("Type A", "Type B"), nrow(your_data), replace = TRUE)
+
+# Create a multi-type point pattern object
+multi_type_data <- ppp(x = your_data$Longitude, y = your_data$Latitude, marks = factor(your_data$station_type), window = window)
+
+# Plot the multi-type point pattern
+plot(multi_type_data, main = "Multi-type Meteorological Stations")
+
+# Calculate the multi-type K-function
+multi_K <- Kcross(multi_type_data, i = "Type A", j = "Type B")
+plot(multi_K, main = "Multi-type K-function Analysis")
+
+```
+
+# Summary
+
+This shows how to use `spatstat` Perform spatial point pattern analysis of meteorological stations, including basic visualization, clustering analysis, density estimation, point pattern simulation, and multi-type point pattern analysis. These tools can help you gain a deeper understanding of the distribution characteristics of spatial point data and its underlying laws.
