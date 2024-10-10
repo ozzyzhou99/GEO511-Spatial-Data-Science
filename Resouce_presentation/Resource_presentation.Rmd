@@ -59,7 +59,7 @@ Below, I will walk through example inputs and introduce some key functions.
 
 ## Demonstration of Spatstat Functionalities
 
-In this talk, I will briefly introduce the main features of the `spatstat` package, including:
+In this case, I will briefly introduce the main features of the `spatstat` package, including:
 
 - Data preparation and point visualization.
 - K-function analysis for evaluating spatial clustering.
