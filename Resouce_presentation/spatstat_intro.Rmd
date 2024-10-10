@@ -14,7 +14,7 @@ library(OpenStreetMap)
 
 # Data Preparation
 
-First, we will load the weather station data and convert it into a point pattern data object in `spatstat`.
+First, we will load the weather station data in US and convert it into a point pattern data object in `spatstat`.
 
 ```{r data-preparation}
 # Load data
@@ -37,7 +37,7 @@ locations <- ppp(x = your_data$Longitude, y = your_data$Latitude, window = windo
 base_map <- openmap(upperLeft = c(max(your_data$Latitude), min(your_data$Longitude)), lowerRight = c(min(your_data$Latitude), max(your_data$Longitude)), type = "osm") # Define the boundaries of the basemap
 base_map_projected <- openproj(base_map, projection = "+proj=longlat +datum=WGS84") # Convert the projection of the base map
 
-plot(base_map_projected, main = "Meteorological Stations in US")
+plot(base_map_projected)
 points(your_data$Longitude, your_data$Latitude, pch = 20, col = "blue", cex = 0.6)
 ```
 
@@ -50,7 +50,7 @@ The K-function is used to evaluate the spatial clustering between points in a po
 K <- Kest(locations)
 
 # Plot K function
-plot(K, main = "K-function Analysis of Meteorological Stations")
+plot(K, main = "K-function Analysis of Weather Stations")
 
 # The black curve(spatial clustering patterns of actual data) is significantly higher than the blue completely random distribution (CSR) curve, which indicates that the distribution of weather stations has significant spatial aggregation. That is, weather stations are not randomly distributed but tend to be concentrated in certain areas.
 
@@ -59,14 +59,14 @@ plot(K, main = "K-function Analysis of Meteorological Stations")
 
 # Density Estimation
 
-Density estimation can be used to observe the distribution density of meteorological stations in space and help identify hot spots.
+Density estimation can be used to observe the distribution density of weather stations in space and help identify hot spots.
 
 ```{r density-estimation}
 # Estimate the density of points
 density_map <- density(locations)
 
 # Plot the density map
-plot(density_map, main = "Density Estimation of Meteorological Stations")
+plot(density_map, main = "Density Estimation of Weather Stations")
 ```
 
 # Point Pattern Simulation
@@ -79,7 +79,7 @@ random_pattern <- rpoispp(300 / area.owin(window) #expected number of points per
                           , win = window)
 
 # Plot the simulated point pattern
-plot(base_map_projected, main = "Simulated Random Point Pattern with Basemap")
+plot(base_map_projected)
 points(random_pattern$x, random_pattern$y, pch = 20, col = "red", cex = 0.6)
 ```
 
@@ -95,7 +95,7 @@ your_data$station_type <- sample(c("Type A", "Type B"), nrow(your_data), replace
 multi_type_data <- ppp(x = your_data$Longitude, y = your_data$Latitude, marks = factor(your_data$station_type), window = window)
 
 # Plot the multi-type point pattern
-plot(multi_type_data, main = "Multi-type Meteorological Stations")
+plot(multi_type_data)
 
 # Calculate the multi-type K-function
 multi_K <- Kcross(multi_type_data, i = "Type A", j = "Type B")
