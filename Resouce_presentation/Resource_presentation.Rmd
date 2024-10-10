@@ -36,7 +36,7 @@ is a distinguished statistician affiliated with Curtin University, Australia. Hi
 ## Author Information
 ### Rolf Turner
 
-is a statistician affiliated with the University of Auckland, New Zealand (now retired, but "honorary researcher"). His research includes statistical computing, survival analysis, and applied statistics.
+is a statistician affiliated with the University of Auckland, New Zealand (now retired, but "Honorary Research Fellow"). His research includes statistical computing, survival analysis, and applied statistics.
 
 <img src='https://www.stat.auckland.ac.nz/~rolf/handsome.jpeg' alt='Rolf Turner' style='width:100%; max-width:250px; display:block; margin-left:auto; margin-right:auto;'>
 
