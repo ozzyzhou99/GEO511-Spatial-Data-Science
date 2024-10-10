@@ -28,8 +28,7 @@ world_clim <- bind_cols(world, as.data.frame(world_clim))
 # Plot the world's maximum temperature map
 plot <-ggplot(world_clim) +
   geom_sf(aes(fill = max)) +  
-  scale_fill_viridis_c(name = "Maximum\nTemperature (C)", limits = c(-5, 40)) +  
-  theme_minimal() +  
+  scale_fill_viridis_c(name = "Maximum\nTemperature (C)", limits = c(-5, 40)) + 
   theme(legend.position = "bottom")  
 
 print(plot)
@@ -46,7 +45,7 @@ hottest_continents <- world_clim %>%
 print(hottest_continents)
 
 # Save as a CSV file
-write.csv(hottest_continents, "hottest_continents.csv", row.names = FALSE)
+write.csv(hottest_continents, "week_06/case_study/hottest_continents.csv", row.names = FALSE)
 
 # Convert date to sf
 world_clim_sf <- st_as_sf(world_clim)
