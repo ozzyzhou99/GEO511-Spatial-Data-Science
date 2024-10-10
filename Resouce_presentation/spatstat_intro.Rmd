@@ -30,12 +30,12 @@ your_data <- your_data[!duplicated(your_data), ]
 window <- owin(xrange = range(your_data$Longitude, na.rm = TRUE),
 yrange = range(your_data$Latitude, na.rm = TRUE))
 
-# Convert the data to a point pattern object
+# Convert raw spatial data into a format that spatstat can process for further analysis
 locations <- ppp(x = your_data$Longitude, y = your_data$Latitude, window = window)
 
 # Plot point pattern with OSM basemap
-base_map <- openmap(upperLeft = c(max(your_data$Latitude), min(your_data$Longitude)), lowerRight = c(min(your_data$Latitude), max(your_data$Longitude)), type = "osm")
-base_map_projected <- openproj(base_map, projection = "+proj=longlat +datum=WGS84")
+base_map <- openmap(upperLeft = c(max(your_data$Latitude), min(your_data$Longitude)), lowerRight = c(min(your_data$Latitude), max(your_data$Longitude)), type = "osm") # Define the boundaries of the basemap
+base_map_projected <- openproj(base_map, projection = "+proj=longlat +datum=WGS84") # Convert the projection of the base map
 
 plot(base_map_projected, main = "Meteorological Stations in US")
 points(your_data$Longitude, your_data$Latitude, pch = 20, col = "blue", cex = 0.6)
@@ -74,8 +74,9 @@ plot(density_map, main = "Density Estimation of Meteorological Stations")
 Simulate a new point pattern using a completely random distribution (CSR) and compare with the actual data.
 
 ```{r point-simulation}
-# Simulate a completely random point pattern, generate about 300 points
-random_pattern <- rpoispp(300 / area.owin(window), win = window)
+# Approximately 300 points are generated within the entire window range.
+random_pattern <- rpoispp(300 / area.owin(window) #expected number of points per unit area
+                          , win = window)
 
 # Plot the simulated point pattern
 plot(base_map_projected, main = "Simulated Random Point Pattern with Basemap")
@@ -87,10 +88,10 @@ points(random_pattern$x, random_pattern$y, pch = 20, col = "red", cex = 0.6)
 If the weather stations have different categories (e.g. different types of weather stations), we can perform multi-type point pattern analysis.
 
 ```{r multi-type}
-# Make sure the data still has enough categories after removing duplicate points
+# Randomly assign site type
 your_data$station_type <- sample(c("Type A", "Type B"), nrow(your_data), replace = TRUE)
 
-# Create a multi-type point pattern object
+# Convert raw spatial data
 multi_type_data <- ppp(x = your_data$Longitude, y = your_data$Latitude, marks = factor(your_data$station_type), window = window)
 
 # Plot the multi-type point pattern
