@@ -53,7 +53,6 @@ is a statistician at Aalborg University, Denmark. He is an expert in spatial sta
 - **Spatial Analysis**: Use functions such as K-function or G-function to assess clustering or regularity.
 - **Density Estimation**: Calculate the density of points over a spatial region.
 - **Simulation**: Simulate random point patterns based on different spatial processes (e.g., Poisson process).
-- **Covariate Analysis**: Fit point process models using covariate data.
 
 Below, I will walk through example inputs and introduce some key functions.
 
