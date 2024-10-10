@@ -1,7 +1,7 @@
 ---
-title: "Introduction to the Spatstat Package"
+title: "Introduction to the 'Spatstat' Package"
 author: "Zhongyu Zhou"
-date: "2024-10-09"
+date: "2024-10-10"
 output:
   ioslides_presentation:
     widescreen: true
@@ -19,91 +19,60 @@ output:
         color: black;
       }
 ---
-# Introduction to `spatstat`
 
-`spatstat` is an R package used for spatial point pattern analysis. It provides a comprehensive set of tools for analyzing and visualizing spatial point patterns, performing cluster analysis, estimating intensity, and simulating point processes. The package is highly useful in a wide range of fields, such as ecology, epidemiology, and geography.
+## Introduction to `spatstat`
 
-For more information, visit the [official CRAN page](https://cran.r-project.org/web/packages/spatstat/index.html).
+`spatstat` is an R package for spatial point pattern analysis. It provides tools for analyzing, visualizing, and modeling spatial point patterns, which makes it useful in a variety of applications in fields such as ecology, epidemiology, and geography.
 
-# Author Information
+Researchers can use `spatstat` to understand the spatial distribution of points, assess clustering or regularity, and simulate point processes.
 
-One of the primary authors of `spatstat` is Adrian Baddeley. He is a prominent figure in the field of spatial statistics and has contributed to several other R packages related to spatial data analysis. Adrian Baddeley is affiliated with Curtin University, Australia, and has authored multiple research papers in the domain of spatial analysis and point processes.
+## Author Information
+### Adrian Baddeley
 
-# Features Overview
+is a distinguished statistician affiliated with Curtin University, Australia. His research interests include spatial data analysis, point processes, and statistical computational methods.
 
-- **Visualization**: Plot point patterns and various diagnostic plots to understand the spatial structure of data.
-- **Spatial Analysis**: Perform functions like K-function analysis and G-function to evaluate clustering or regularity.
-- **Density Estimation**: Estimate the density of points over a spatial region.
+<img src='https://s3-ap-southeast-2.amazonaws.com/curtin-staff-profile-images-prd/adrian-baddeley-8376fd59.jpg?ver=0.40922439589039405' alt='Adrian Baddeley' style='width:100%; max-width:400px; display:block; margin-left:auto; margin-right:auto;'>
+
+## Author Information
+### Rolf Turner
+
+is a statistician affiliated with the University of Auckland, New Zealand (now retired, but "honorary researcher"). His research includes statistical computing, survival analysis, and applied statistics.
+
+<img src='https://www.stat.auckland.ac.nz/~rolf/handsome.jpeg' alt='Rolf Turner' style='width:100%; max-width:250px; display:block; margin-left:auto; margin-right:auto;'>
+
+## Author Information
+### Ege Rubak
+
+is a statistician at Aalborg University, Denmark. He is an expert in spatial statistics and statistical computing, with a focus on developing methods for analyzing spatial data. His research also involves applied probability and methodological development in statistics.
+
+<img src='https://vbn.aau.dk/files-asset/716309502/EgeHolgerRubak.jpg?w=160&f=webp' alt='Ege Rubak' style='width:100%; max-width:200px; display:block; margin-left:auto; margin-right:auto;'>
+
+## Features Overview
+
+- **Visualization**: Plot points and various plots to understand the spatial structure of your data.
+- **Spatial Analysis**: Use functions such as K-function or G-function to assess clustering or regularity.
+- **Density Estimation**: Calculate the density of points over a spatial region.
 - **Simulation**: Simulate random point patterns based on different spatial processes (e.g., Poisson process).
 - **Covariate Analysis**: Fit point process models using covariate data.
 
-In the following sections, a simple demonstration of some key functionalities will be provided.
+Below, I will walk through example inputs and introduce some key functions.
 
-# Demonstration of Code
+## Demonstration of Spatstat Functionalities
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+In this talk, I will briefly introduce the main features of the `spatstat` package, including:
 
-```{r load-packages, echo=TRUE}
-# Load required packages
-library(spatstat)
-```
+- Data preparation and point visualization.
+- K-function analysis for evaluating spatial clustering.
+- Density estimation for identifying spatial hotspots.
+- Random point pattern simulation.
+- Multi-type point pattern analysis.
 
-## Data Preparation
+For a detailed code demonstration with examples, please visit the [interactive resource presentation here](https://ozzyzhou99.github.io/GEO511-Spatial-Data-Science/Resouce_presentation/spatstat_intro.html).
 
-We will load sample data and convert it into a point pattern object.
+## Summary
 
-```{r data-preparation, echo=TRUE}
-# Generate some sample data
-set.seed(42)
-x <- runif(100, min = 0, max = 1)
-y <- runif(100, min = 0, max = 1)
+The `spatstat` package can help researchers gain a deeper understanding of the distribution characteristics and underlying laws of spatial point data, and is an essential tool for spatial point pattern analysis.
 
-# Define the window and create a point pattern object
-window <- owin(c(0, 1), c(0, 1))
-locations <- ppp(x, y, window = window)
-
-# Plot the data
-plot(locations, main = "Sample Point Pattern")
-```
-
-## K-function Analysis
-
-The K-function helps to evaluate whether the points exhibit clustering or regularity.
-
-```{r k-function-analysis, echo=TRUE}
-# Compute and plot the K-function
-K <- Kest(locations)
-plot(K, main = "K-function Analysis")
-```
-
-## Density Estimation
-
-Estimate the density of points in a given region to understand the hotspots.
-
-```{r density-estimation, echo=TRUE}
-# Estimate density and plot the results
-density_map <- density(locations)
-plot(density_map, main = "Density Estimation")
-```
-
-## Point Pattern Simulation
-
-Simulate a random point pattern using a homogeneous Poisson process.
-
-```{r point-pattern-simulation, echo=TRUE}
-# Simulate random point pattern
-random_pattern <- rpoispp(100, win = window)
-
-# Plot the simulated pattern
-plot(random_pattern, main = "Simulated Point Pattern")
-```
-
-# Summary
-
-In this presentation, we introduced the `spatstat` package, which is an essential tool for spatial point pattern analysis. We demonstrated some of the key features, including point pattern visualization, K-function analysis, density estimation, and point pattern simulation.
-
-The `spatstat` package is highly useful for spatial data analysis across various domains and can help researchers understand the underlying patterns in spatial data more effectively.
+For more details and code examples, please visit the link provided above.
 
 Thank you for your attention!
