@@ -67,7 +67,7 @@ In this case, I will briefly introduce the main features of the `spatstat` packa
 - Random point pattern simulation.
 - Multi-type point pattern analysis.
 
-For a detailed code demonstration with examples, please visit here [interactive resource presentation here](https://ozzyzhou99.github.io/GEO511-Spatial-Data-Science/Resouce_presentation/spatstat_intro.html).
+For a detailed code demonstration with examples, [please visit here](https://ozzyzhou99.github.io/GEO511-Spatial-Data-Science/Resouce_presentation/spatstat_intro.html).
 
 ## Summary
 
