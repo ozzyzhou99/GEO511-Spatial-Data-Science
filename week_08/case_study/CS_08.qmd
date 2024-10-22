@@ -1,0 +1,42 @@
+---
+title: "CS_08"
+format:
+  html: default
+  github: default
+  pptx: default
+  docx: default
+editor: visual
+---
+
+```{r}
+# 加载所需库
+library(readr)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+
+# 下载并读取数据
+url <- "ftp://aftp.cmdl.noaa.gov/products/trends/co2/co2_annmean_mlo.txt"
+data <- read_table(url, skip = 57, col_names = c("year", "mean", "uncertainty"))
+
+# 绘制 CO2 随时间变化的折线图
+plot <- ggplot(data, aes(x = year, y = mean)) +
+  geom_line(color = "blue") +
+  labs(title = "Mauna Loa CO2 Annual Mean Levels",
+       x = "Year",
+       y = "Mean CO2 (ppm)") +
+  theme_minimal()
+print(plot)
+
+# 生成表格并使用 kableExtra 美化
+summary_table <- data %>%
+  tail(5) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F)
+
+print(summary_table)
+
+# 保存表格为 PNG
+as_image(summary_table, width = 10, file = "table.png")
+```
+
