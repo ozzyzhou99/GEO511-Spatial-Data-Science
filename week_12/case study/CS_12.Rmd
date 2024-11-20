@@ -1,5 +1,5 @@
 ---
-title: "CS_12 Document"
+title: "CS_12"
 author: "Zhongyu Zhou"
 date: "2024-11-14"
 output:
