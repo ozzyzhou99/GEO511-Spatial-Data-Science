@@ -1,0 +1,84 @@
+---
+title: "CS_12 Document"
+author: "Zhongyu Zhou"
+date: "2024-11-14"
+output:
+  html_document:
+    keep_md: true
+    theme: cerulean
+    highlight: tango
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, results = 'show', message = TRUE, warning = TRUE)
+```
+
+# Introduction
+This case study will explore several ways to generate dynamic and interactive data displays. These include making maps and graphs that you can pan/zoom, select features for more information, and interact with in other ways. The most common output format is HTML, which can easily be embedded in a website.
+
+```{r load-packages, include=FALSE}
+# Load necessary packages
+library(tidyverse)
+library(xts)
+library(dygraphs)
+library(openmeteo)
+```
+
+# Get daily weather data for Buffalo
+
+```{r data-preparation}
+# Define the geographic coordinates of Buffalo
+buffalo_coords <- c(43.00923265935055, -78.78494250958327)
+
+# Get daily weather data from January 1, 2023 to today
+weather_data <- weather_history(
+  location = buffalo_coords,
+  start = "2023-01-01",
+  end = Sys.Date(),
+  daily = c("temperature_2m_max", "temperature_2m_min", "precipitation_sum")
+)
+
+# Calculate the daily average temperature
+weather_data <- weather_data %>%
+  mutate(daily_temperature_2m_mean = (daily_temperature_2m_max + daily_temperature_2m_min) / 2)
+```
+
+# Convert time series data to xts format
+
+```{r data2xts}
+temp_xts <- xts(
+  weather_data %>% select(daily_temperature_2m_max, daily_temperature_2m_mean),
+  order.by = as.Date(weather_data$date)
+)
+precip_xts <- xts(
+  weather_data %>% select(daily_precipitation_sum),
+  order.by = as.Date(weather_data$date)
+)
+```
+
+# Create a Dygraph chart
+
+```{r Cchart}
+# Temperature chart
+temp_dygraph <- dygraph(temp_xts, main = "Daily Maximum Temperature in Buffalo, NY") %>%
+  dySeries("daily_temperature_2m_max", label = "Max Temp (°C)") %>%
+  dySeries("daily_temperature_2m_mean", label = "Mean Temp (°C)") %>%
+  dyRangeSelector(dateWindow = c("2023-01-01", as.character(Sys.Date())))
+
+# Precipitation chart
+precip_dygraph <- dygraph(precip_xts, main = "Daily Precipitation in Buffalo, NY") %>%
+  dySeries("daily_precipitation_sum", label = "Precipitation (mm)") %>%
+  dyRangeSelector(dateWindow = c("2023-01-01", as.character(Sys.Date())))
+
+# Display the chart
+temp_dygraph
+precip_dygraph
+```
+
+# Save as HTML file
+
+```{r save-plot}
+library(htmlwidgets)
+saveWidget(temp_dygraph, "buffalo_temperature.html")
+saveWidget(precip_dygraph, "buffalo_precipitation.html")
+```
