@@ -1,4 +1,4 @@
-# 加载所需包
+# Load required packages
 library(tidyverse)
 library(spData)
 library(sf)
@@ -8,14 +8,14 @@ library(tidycensus)
 library(leaflet)
 library(mapview)
 
-# 注册并检查并行核
+# Register and check parallel cores
 registerDoParallel(4)
 getDoParWorkers()
 
-# 设置Census API Key
+# Set Census API Key
 census_api_key("71ee368dd6a9d472f0ba814e6f90b8566a1a7192")
 
-# 定义种族变量
+# Define race variables
 race_vars <- c(
   "Total Population" = "P1_001N",
   "White alone" = "P1_003N",
@@ -33,38 +33,32 @@ erie <- get_decennial(geography = "block", variables = race_vars, year=2020,
                       state = "NY", county = "Erie County", geometry = TRUE,
                       sumfile = "pl", cache_table=T) 
 
-# 裁剪数据以减少计算量
+# Crop the data to reduce the amount of calculation
 erie <- st_crop(erie, xmin = -78.9, xmax = -78.85, ymin = 42.888, ymax = 42.92)
 
-# 确保 variable 列是因子类型
+# Make sure the variable column is a factor type
 erie$variable <- as.factor(erie$variable)
 
 # 创建并行集群
-numCores <- detectCores() - 1 # 留一个核心以保证系统稳定
+numCores <- detectCores() - 1 
 cl <- makeCluster(numCores)
 registerDoParallel(cl)
 
-# 将 sf 对象和其他所需的变量传递给每个并行工作节点
+# Pass the sf object and other required variables to each parallel worker node
 clusterExport(cl, c("erie"))
-clusterEvalQ(cl, library(sf)) # 确保每个节点加载 sf 包
+clusterEvalQ(cl, library(sf)) 
 
-# 使用 foreach 循环处理每个种族
+# Use a foreach loop to process each race
 erie_dots <- foreach(race = levels(erie$variable), .combine = rbind, .packages = c("sf", "dplyr")) %dopar% {
-  # 过滤数据，仅保留当前种族
   race_data <- erie %>% filter(variable == race)
-  
-  # 对每个人生成随机点，按每个多边形的人口数生成点
   points <- race_data %>%
     st_sample(size = .$value) %>%
     st_as_sf() %>%
-    mutate(variable = race) # 添加 variable 列
-  
-  # 返回生成的点
+    mutate(variable = race) 
   points
 }
 
-# 停止集群
 stopCluster(cl)
 
-# 使用 mapview 绘制地图，并将 zcol 设置为种族身份
+# Draw the map using mapview and set zcol to ethnic identity
 print(mapview(erie_dots, zcol = "variable", cex = 1, legend = TRUE))
